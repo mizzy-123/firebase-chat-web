@@ -128,7 +128,7 @@ main.show-chatbot .chatbot {
   transform: translateY(-50%);
 }
 .header-chat h2 {
-  font-size: 1.4rem;
+  font-size: 1rem;
 }
 .chatbot .chatbox {
   overflow-y: auto;
@@ -172,7 +172,7 @@ main.show-chatbot .chatbot {
   border-radius: 10px 10px 0 10px;
   max-width: 75%;
   color: #fff;
-  font-size: 1.3rem;
+  font-size: 1rem;
   background: #724ae8;
 }
 .chatbox .incoming p {
@@ -185,7 +185,7 @@ main.show-chatbot .chatbot {
 .chatbox .incoming p {
   color: #000;
   background: #f2f2f2;
-  font-size: 1.3rem;
+  font-size: 1rem;
 }
 .chatbot .chat-input {
   display: flex;
@@ -206,7 +206,7 @@ main.show-chatbot .chatbot {
   max-height: 180px;
   padding: 15px 15px 15px 0;
   /* font-size: 0.95rem; */
-  font-size: 1.3rem;
+  font-size: 1rem;
 }
 .chat-input span {
   align-self: flex-end;
@@ -216,7 +216,7 @@ main.show-chatbot .chatbot {
   display: flex;
   align-items: center;
   visibility: hidden;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 .chat-input textarea:valid ~ span {
   visibility: visible;
