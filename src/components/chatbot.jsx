@@ -49,6 +49,7 @@ export default function Chatbot() {
 
     await setDoc(ipDocRef, {
       status: 1,
+      timestamp: timestamp,
     });
 
     refInput.current.value = "";
