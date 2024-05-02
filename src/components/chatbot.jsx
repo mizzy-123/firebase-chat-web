@@ -6,12 +6,15 @@ import { doc, onSnapshot, orderBy, query, setDoc } from "firebase/firestore";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/firebase/Initialize";
 import { v4 as uuidv4 } from "uuid";
+import { format } from "date-fns";
+import PostNotification from "@/api/postNotification";
 
 export default function Chatbot() {
   const { toogleRef } = useContext(AppContext);
   const refInput = useRef(null);
   const [sesiUid, setsesiUid] = useState("");
   const [resultMessage, setResultMessage] = useState([]);
+  const [deviceToken, setDeviceToken] = useState([]);
   const refChatBox = useRef(null);
 
   // useEffect(() => {
@@ -41,20 +44,27 @@ export default function Chatbot() {
     const ipDocRef = doc(citiesRef, `${sesiUid}`);
 
     const message = collection(ipDocRef, "message");
-    const docRef = await addDoc(message, {
+
+    const docRef = addDoc(message, {
       user: "web",
       message: refInput.current.value,
       timestamp: timestamp,
     });
 
-    await setDoc(ipDocRef, {
+    const time = setDoc(ipDocRef, {
       status: 1,
       timestamp: timestamp,
     });
 
+    const responseNotif = PostNotification({ deviceToken: deviceToken, title: "FaceChat", message: "Pesan baru" });
+    const [a, b, c] = await Promise.all([docRef, time, responseNotif]);
+
+    if (c.status == 200) {
+      console.log("notif sukses");
+    }
     refInput.current.value = "";
     refChatBox.current.scrollTo(0, refChatBox.current.scrollHeight);
-    console.log("firebase message", docRef.id);
+    console.log("firebase message", a.id);
   };
 
   const handleKeyPress = (event) => {
@@ -87,7 +97,7 @@ export default function Chatbot() {
         const newMessages = [];
         snapshot.forEach((doc) => {
           const data = doc.data();
-          newMessages.push({ user: data.user, message: data.message });
+          newMessages.push({ user: data.user, message: data.message, timestamp: data.timestamp });
           console.log("fire", data);
         });
         setResultMessage(newMessages); // Menetapkan kembali state dengan array baru yang berisi item baru
@@ -98,6 +108,22 @@ export default function Chatbot() {
       };
     }
   }, [sesiUid]);
+
+  useEffect(() => {
+    const collectDevice = collection(db, "device");
+    const token = onSnapshot(collectDevice, (snapshot) => {
+      const device = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        device.push(data.token);
+      });
+      setDeviceToken(device);
+    });
+
+    return () => {
+      token();
+    };
+  }, []);
 
   console.log("resut", resultMessage);
 
@@ -118,14 +144,46 @@ export default function Chatbot() {
           if (data.user === "web") {
             return (
               <li className="chat outgoing" key={i}>
-                <p>{data.message}</p>
+                <p>
+                  {data.message} <br />
+                  <div
+                    style={{
+                      fontSize: ".8rem",
+                      color: "white",
+                    }}
+                  >
+                    {(() => {
+                      let date = new Date(data.timestamp);
+
+                      const formattedDate = format(date, "dd/MM/yyyy HH:mm");
+
+                      return formattedDate;
+                    })()}
+                  </div>
+                </p>
               </li>
             );
           } else {
             return (
               <li className="chat incoming" key={i}>
                 <span className="material-symbols-outlined">smart_toy</span>
-                <p>{data.message}</p>
+                <p>
+                  {data.message} <br />
+                  <div
+                    style={{
+                      fontSize: ".8rem",
+                      color: "#724ae8",
+                    }}
+                  >
+                    {(() => {
+                      let date = new Date(data.timestamp);
+
+                      const formattedDate = format(date, "dd/MM/yyyy HH:mm");
+
+                      return formattedDate;
+                    })()}
+                  </div>
+                </p>
               </li>
             );
           }

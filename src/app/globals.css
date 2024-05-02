@@ -151,8 +151,11 @@ main.show-chatbot .chatbot {
   list-style: none;
 }
 .chatbox .outgoing {
-  margin: 20px 0;
+  margin: 10px 0;
   justify-content: flex-end;
+}
+.chatbox .incoming {
+  margin: 10px 0;
 }
 .chatbox .incoming span {
   width: 32px;
